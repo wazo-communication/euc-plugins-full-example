@@ -1,0 +1,10 @@
+https://github.com/wazo-platform/wazo-auth-client/archive/master.zip
+https://github.com/wazo-platform/wazo-calld-client/archive/master.zip
+fastapi==0.63.0
+pydantic==1.7.4
+pyyaml==3.13
+requests==2.21.0
+starlette==0.13.6
+uvicorn==0.13.3
+httptools==0.0.11
+uvloop==0.11.2

@@ -1,0 +1,37 @@
+{
+  "manifestVersion": "0.1",
+  "version": "1.0.0",
+  "id": "wazo-example-plugin",
+  "packageName": "com.wazo.example",
+  "developer": {
+    "name": "Wazo",
+    "websiteUrl": "https://wazo.io/",
+    "privacyUrl": "https://wazo.io/privacy",
+    "mpnId": "1234567890"
+  },
+  "name": {
+    "short": "Wazo Example",
+    "full": "Wazo Example"
+  },
+  "description": {
+    "short": "Example plugin",
+    "full": "Example plugin"
+  },
+  "icons": {
+    "outline": "",
+    "color": ""
+  },
+  "accentColor": "red",
+  "staticTabs": [
+    {
+      "entityId": "example",
+      "context": [
+        "sidebarTab"
+      ],
+      "name": "Example",
+      "contentUrl": "./wda/index.html",
+      "icon": "./wda/logo.svg"
+    }
+  ],
+  "backgroundScript": "./wda/background.js"
+}
