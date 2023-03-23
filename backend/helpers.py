@@ -12,12 +12,13 @@ from fastapi import WebSocket, Header, HTTPException
 
 from wazo_auth_client import Client as Auth
 from wazo_calld_client import Client as Calld
+
+from logger import setup_logging
 from wazo_websocketd_async_client import Client as WWebSocket
 
-logger = logging.getLogger(__name__)
-LOG_FORMAT = '%(asctime)s (%(levelname)s) (%(name)s): %(message)s'
-logging.basicConfig(format=LOG_FORMAT)
-logger.setLevel(logging.DEBUG)
+
+logger = setup_logging()
+
 
 class AuthManager:
     def __init__(
