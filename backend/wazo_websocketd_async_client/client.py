@@ -10,7 +10,18 @@ import websockets
 
 from .exceptions import AlreadyConnectedException, NotRunningException
 
-logger = logging.getLogger(__name__)
+
+def setup_logger(name):
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
+
+    handler = logging.StreamHandler()
+    handler.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+    return logger
 
 
 class websocketdClient:
@@ -37,6 +48,7 @@ class websocketdClient:
         self._ws_app = None
         self._is_running = False
         self._callbacks = {}
+        self.logger = setup_logger(f"{__name__}.{id(self)}")
 
     def set_token(self, token):
         if self._is_running:
@@ -86,28 +98,28 @@ class websocketdClient:
                 await self.trigger_callback(msg['data']['name'], msg['data'])
 
     def on_error(self, ws, error):
-        logger.error('WS encountered an error: %s: %s', type(error).__name__, error)
+        self.logger.error('WS encountered an error: %s: %s', type(error).__name__, error)
         if isinstance(error, KeyboardInterrupt):
             raise error
 
     def on_close(self, ws, close_status_code, close_reason):
         if close_status_code and close_reason:
-            logger.debug(
+            self.logger.debug(
                 'WS closed with code %s, reason: %s.',
                 close_status_code,
                 close_reason if close_reason else 'unknown',
             )
         elif close_status_code:
-            logger.debug(
+            self.logger.debug(
                 'WS closed with code %s.',
                 close_status_code,
             )
         else:
-            logger.debug('WS closed.')
+            self.logger.debug('WS closed.')
         self._is_running = False
 
     def on_open(self, ws):
-        logger.debug('Starting connection ...')
+        self.logger.debug('Starting connection ...')
 
     async def update_token(self, token):
         await self._ws_app.send(json.dumps({'op': 'token', 'data': {'token': token}}))
@@ -125,25 +137,38 @@ class websocketdClient:
         return [["X-Auth-Token", self._token_id]]
 
     async def run(self):
-        try:
-            if not self._verify_certificate:
-                ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-                ssl_context.check_hostname = False
-                ssl_context.verify_mode = ssl.CERT_NONE
-            else:
-                ssl_context = True
+        while True:
+            try:
+                if not self._verify_certificate:
+                    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+                    ssl_context.check_hostname = False
+                    ssl_context.verify_mode = ssl.CERT_NONE
+                else:
+                    ssl_context = True
 
-            self._ws_app = await websockets.connect(
-                self.url(),
-                extra_headers=self.headers(),
-                ssl=ssl_context
-            )
+                self._ws_app = await websockets.connect(
+                    self.url(),
+                    extra_headers=self.headers(),
+                    ssl=ssl_context
+                )
 
-            self.on_open(self._ws_app)
+                self.logger.info("Websocket connected")
 
-            while True:
-                msg = await self._ws_app.recv()
-                await self.on_message(self._ws_app, msg)
+                self.on_open(self._ws_app)
 
-        except Exception as e:
-            logger.exception('Websocketd connection error: %s: %s', type(e).__name__, e)
+                while True:
+                    msg = await self._ws_app.recv()
+                    await self.on_message(self._ws_app, msg)
+
+            except websockets.exceptions.ConnectionClosedError:
+                self.logger.exception('Websocket connection closed unexpectedly')
+                await asyncio.sleep(2)
+
+            except websockets.exceptions.ConnectionClosedOK:
+                self.logger.exception('Websocket connection closed by the server')
+                await asyncio.sleep(2)
+
+            except Exception as e:
+                self.logger.exception('Websocket connection error: %s: %s', type(e).__name__, e)
+                await asyncio.sleep(2)
+

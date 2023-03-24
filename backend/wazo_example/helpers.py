@@ -182,6 +182,7 @@ class WazoWebSocket:
 
         logger.debug('Connect websocket client to Wazo')
         self.ws = WWebSocket(self.host, token=self.auth.token, verify_certificate=self.verify_certificate)
+        WWebSocket.logger.setLevel(logging.DEBUG)
         self.ws.on('call_created', self.call_created)
         self.ws.on('auth_session_expire_soon', self.session_expired)
         await self.ws.run()
