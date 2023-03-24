@@ -24,8 +24,8 @@ class Application:
         self.setup_cors()
         app.include_router(router)
 
-    def setup_static(self) -> None:
-        app.mount("/static", StaticFiles(directory=".."), name="static")
+    def setup_static(self, path: str = "/data") -> None:
+        app.mount("/content", StaticFiles(directory=path), name="static")
 
     def setup_cors(self) -> None:
         app.add_middleware(

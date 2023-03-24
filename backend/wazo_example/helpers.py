@@ -184,10 +184,18 @@ class WazoWebSocket:
         self.ws = WWebSocket(self.host, token=self.auth.token, verify_certificate=self.verify_certificate)
         self.ws.logger.setLevel(logging.DEBUG)
         self.ws.on('call_created', self.call_created)
+        self.ws.on('call_answered', self.call_answered)
+        self.ws.on('call_ended', self.call_ended)
         self.ws.on('auth_session_expire_soon', self.session_expired)
         await self.ws.run()
 
     async def call_created(self, handler: Dict[str, Any]) -> None:
+        await self.notify(handler)
+
+    async def call_answered(self, handler: Dict[str, Any]) -> None:
+        await self.notify(handler)
+
+    async def call_ended(self, handler: Dict[str, Any]) -> None:
         await self.notify(handler)
 
     async def notify(self, handler: Dict[str, Any]) -> None:

@@ -161,6 +161,6 @@ class websocketdClient:
                     await self.on_message(self._ws_app, msg)
 
             except websockets.ConnectionClosed as e:
-                self.on_close(e.rcvd.code, e.rcvd.reason)
+                self.on_close(4000, "Unknown Exception")
                 await asyncio.sleep(2)
                 continue

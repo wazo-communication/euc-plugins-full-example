@@ -1,14 +1,34 @@
 import app from 'https://cdn.jsdelivr.net/npm/@wazo/euc-plugins-sdk@latest/lib/esm/app.js';
+import 'https://cdn.jsdelivr.net/npm/@wazo/sdk';
 
 let session;
 
-const url = 'quintana.wazo.community';
-const appColor = '#8e6a3a';
+const url = window.location.origin;
 
-app.onIframeMessage = (msg) => {
-  if (['conference_participant_left', 'conference_participant_joined'].includes(msg.event)) {
-    updateParticipants();
+const hello = document.getElementById('hello');
+const caller = document.getElementById('caller');
+
+app.onIframeMessage = async (msg) => {
+  if (msg.event === 'call_answered') {
+    changeCaller(`${msg.data.peer_caller_id_name} (${msg.data.peer_caller_id_number})`);
   }
+  if (msg.event === 'call_ended') {
+    const data = await getHello();
+    if (data.items.length === 0) {
+      changeCaller();
+    }
+  }
+}
+
+const changeCaller = (data) => {
+    if (!data) {
+      data = 'Nobody';
+    }
+    caller.textContent = `In call with: ${data}`;
+}
+
+const changeHello = (data) => {
+    hello.textContent = data;
 }
 
 const getHello = async () => {
@@ -20,11 +40,11 @@ const getHello = async () => {
     }
   }
 
-  return fetch(`https://${url}/hackathon/api/coffee`, options).then(response => response.json());
+  return fetch(`${url}/calls`, options).then(response => response.json());
 }
 
 const appLoaded = () => {
-  const data = { type: 'coffee/APP_LOADED' };
+  const data = { type: 'hello/APP_LOADED' };
   window.top.postMessage(data, '*')
 }
 
@@ -33,9 +53,21 @@ const appLoaded = () => {
   const context = app.getContext();
   session = context.user;
 
-  app.closeLeftPanel();
-  app.changeNavBarColor(appColor);
+  Wazo.Auth.setHost(session.host);
+  Wazo.Auth.setApiToken(session.token);
 
-  getHello();
+  const me = await Wazo.api.confd.getUser(session.uuid);
+  changeHello(`Hello, ${me.firstName} ${me.lastName}!`);
+
+  const data = await getHello();
+  const firstCaller = data?.items[0];
+  if (firstCaller) {
+      const displayCaller = `${firstCaller.peer_caller_id_name} (${firstCaller.peer_caller_id_number})`;
+      changeCaller(displayCaller);
+  } else {
+      changeCaller();
+  }
+
   appLoaded();
+  app.closeLeftPanel();
 })();

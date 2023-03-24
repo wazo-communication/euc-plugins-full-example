@@ -17,6 +17,10 @@ FROM python:3.9-slim-bullseye AS build-image
 COPY --from=compile-image /opt/venv /opt/venv
 
 COPY ./backend/config /etc/wazo-example
+RUN mkdir /data
+COPY manifest* /data
+COPY wda /data/wda
+COPY portal /data/portal
 
 EXPOSE 8888
 
