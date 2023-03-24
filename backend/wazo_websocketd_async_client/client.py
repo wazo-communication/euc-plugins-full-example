@@ -102,7 +102,7 @@ class websocketdClient:
         if isinstance(error, KeyboardInterrupt):
             raise error
 
-    def on_close(self, ws, close_status_code, close_reason):
+    def on_close(self, close_status_code, close_reason):
         if close_status_code and close_reason:
             self.logger.debug(
                 'WS closed with code %s, reason: %s.',
@@ -152,7 +152,7 @@ class websocketdClient:
                     ssl=ssl_context
                 )
 
-                self.logger.info("Websocket connected")
+                self.logger.debug("Websocket connected")
 
                 self.on_open(self._ws_app)
 
@@ -160,15 +160,7 @@ class websocketdClient:
                     msg = await self._ws_app.recv()
                     await self.on_message(self._ws_app, msg)
 
-            except websockets.exceptions.ConnectionClosedError:
-                self.logger.exception('Websocket connection closed unexpectedly')
+            except websockets.ConnectionClosed as e:
+                self.on_close(e.rcvd.code, e.rcvd.reason)
                 await asyncio.sleep(2)
-
-            except websockets.exceptions.ConnectionClosedOK:
-                self.logger.exception('Websocket connection closed by the server')
-                await asyncio.sleep(2)
-
-            except Exception as e:
-                self.logger.exception('Websocket connection error: %s: %s', type(e).__name__, e)
-                await asyncio.sleep(2)
-
+                continue
