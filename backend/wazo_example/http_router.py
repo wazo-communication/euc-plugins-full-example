@@ -6,8 +6,8 @@ from fastapi import APIRouter, WebSocket, Depends, Header
 from starlette.websockets import WebSocketDisconnect
 from typing import Optional, Dict, Any, List
 
-from dependencies import auth, calls, wclient
-from logger import setup_logging
+from .dependencies import auth, calls, wclient
+from .logger import setup_logging
 
 
 logger = setup_logging()

@@ -4,9 +4,9 @@
 import asyncio
 from typing import List, Dict, Any
 
-from logger import setup_logging
-from http_server import app, Application
-from dependencies import wwebsocket, wclient
+from .logger import setup_logging
+from .http_server import app, Application
+from .dependencies import wwebsocket, wclient
 
 
 logger = setup_logging()

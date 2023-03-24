@@ -13,9 +13,9 @@ from fastapi import WebSocket, Header, HTTPException
 from wazo_auth_client import Client as Auth
 from wazo_calld_client import Client as Calld
 
-from logger import setup_logging
 from wazo_websocketd_async_client import Client as WWebSocket
 
+from .logger import setup_logging
 
 logger = setup_logging()
 

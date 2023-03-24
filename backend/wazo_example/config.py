@@ -7,5 +7,5 @@ from typing import Dict, Any
 
 
 def load_config() -> Dict[str, Any]:
-    with open('config/config.yml') as file:
+    with open('/etc/wazo-example/config.yml') as file:
         return yaml.load(file, yaml.Loader)
