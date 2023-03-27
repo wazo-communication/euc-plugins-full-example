@@ -39,7 +39,12 @@ class Application:
     def setup_cors(self) -> None:
         self.app.add_middleware(
             CORSMiddleware,
-            allow_origins=["*"],
+            allow_origins=[
+                "https://app.wazo.io",
+                "https://app.development.wazo.cloud",
+                "https://portal.wazo.io",
+                "https://portal.development.wazo.cloud"
+            ],
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],
