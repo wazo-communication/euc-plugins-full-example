@@ -9,26 +9,26 @@ from fastapi.staticfiles import StaticFiles
 
 from .http_router import router
 
-app = FastAPI(
-    title='application',
-    openapi_url='/api/api.yml',
-    redoc_url=None,
-    docs_url=None
-)
-
 
 class Application:
     def __init__(self, config: dict = None):
+        self.app = FastAPI(
+            title='application',
+            openapi_url='/api/api.yml',
+            redoc_url=None,
+            docs_url=None
+        )
+
         self.config: dict = config
         self.setup_static()
         self.setup_cors()
-        app.include_router(router)
+        self.app.include_router(router)
 
     def setup_static(self, path: str = "/data") -> None:
-        app.mount("/content", StaticFiles(directory=path), name="static")
+        self.app.mount("/content", StaticFiles(directory=path), name="static")
 
     def setup_cors(self) -> None:
-        app.add_middleware(
+        self.app.add_middleware(
             CORSMiddleware,
             allow_origins=["*"],
             allow_credentials=True,
@@ -36,5 +36,8 @@ class Application:
             allow_headers=["*"],
         )
 
+    def load_app(self) -> FastAPI:
+        return self.app
+
     def run(self, host="0.0.0.0", port=8888) -> None:
-        uvicorn.run(app, host=host, port=port, log_level="info", reload=False)
+        uvicorn.run(self.app, host=host, port=port, log_level="info", reload=False)

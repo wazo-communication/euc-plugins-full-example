@@ -10,6 +10,7 @@ def main():
     config = load_config()
     logger = setup_logging()
     controller = Controller(config)
+    controller.start()
     controller.run()
 
 if __name__ == '__main__':

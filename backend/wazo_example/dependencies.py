@@ -11,8 +11,10 @@ from .helpers import (
     CallManager,
     WazoWebSocket
 )
+from .logger import setup_logging
 
 
+logger = setup_logging()
 config = load_config()
 
 host = config['host'] or os.getenv('WAZO_HOST')
@@ -28,3 +30,11 @@ wwebsocket = WazoWebSocket(
     password,
     auth
 )
+
+async def queue_synchro(queue: asyncio.Queue) -> None:
+    while True:
+        try:
+            data: Any = await queue.get()
+            await wclient.send(data)
+        except Exception as e:
+            logger.error(f"An error occurred while processing the queue: {e}")
