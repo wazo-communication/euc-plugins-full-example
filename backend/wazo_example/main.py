@@ -3,12 +3,10 @@
 
 from .controller import Controller
 from .config import load_config
-from .logger import setup_logging
 
 
 def main():
     config = load_config()
-    logger = setup_logging()
     controller = Controller(config)
     controller.start()
     controller.run()
