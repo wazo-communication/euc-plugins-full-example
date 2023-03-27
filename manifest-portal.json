@@ -14,75 +14,19 @@
     "full": "Full app name"
   },
   "description": {
-    "short": "Short description of your app (<= 80 chars)",
-    "full": "Full description of your app (<= 4000 chars)"
+    "short": "Demo with portal",
+    "full": "Demo to add feature hello from portal"
   },
   "staticTabs": [
-    {
-      "entityId": "stats",
-      "context": [
-        "generalTab"
-      ],
-      "name": "Stats",
-      "contentUrl": "./portal/stats.html"
-    },
-    {
-      "entityId": "stack-dashboard-stats",
-      "context": [
-        "generalPbxTab"
-      ],
-      "name": "My stack stats",
-      "contentUrl": "./portal/stats.html"
-    },
-
-    {
-      "entityId": "stack-tab-stats",
-      "context": [
-        "pbxMenu"
-      ],
-      "name": "Stack Stats",
-      "parent": "common.layout.pbxMenu.userManagement",
-      "contentUrl": "./portal/stats-stack.html"
-    },
-
-    {
-      "entityId": "sms",
-      "context": [
-        "pbxMenu"
-      ],
-      "name": "SMS",
-      "parent": "common.layout.pbxMenu.settings",
-      "contentUrl": "./portal/sms.html"
-    },
-
-    {
-      "entityId": "user-details",
-      "context": [
-        "pbx.users"
-      ],
-      "name": "More user details",
-      "contentUrl": "./portal/pbx-user.html"
-    },
-
     {
       "entityId": "custom-child",
       "context": [
         "pbxMenu"
       ],
-      "name": "Coffee Room",
-      "parent": "Fun",
+      "name": "Hello World",
+      "parent": "Demo",
       "parentIcon": "Accessibility",
-      "contentUrl": "./portal/coffee.html"
-    },
-    {
-      "entityId": "global-settings",
-      "context": [
-        "globalSettings"
-      ],
-      "name": "Custom global",
-      "icon": "BrightnessHigh",
-      "contentUrl": "./portal/global.html"
+      "contentUrl": "./portal/index.html"
     }
-  ],
-  "backgroundScript": "./portal/background.js"
+  ]
 }
