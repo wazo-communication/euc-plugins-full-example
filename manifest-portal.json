@@ -24,7 +24,7 @@
         "generalTab"
       ],
       "name": "Stats",
-      "contentUrl": "http://localhost:3001/portal/stats.html"
+      "contentUrl": "./portal/stats.html"
     },
     {
       "entityId": "stack-dashboard-stats",
@@ -32,7 +32,7 @@
         "generalPbxTab"
       ],
       "name": "My stack stats",
-      "contentUrl": "http://localhost:3001/portal/stats.html"
+      "contentUrl": "./portal/stats.html"
     },
 
     {
@@ -42,7 +42,7 @@
       ],
       "name": "Stack Stats",
       "parent": "common.layout.pbxMenu.userManagement",
-      "contentUrl": "http://localhost:3001/portal/stats-stack.html"
+      "contentUrl": "./portal/stats-stack.html"
     },
 
     {
@@ -52,7 +52,7 @@
       ],
       "name": "SMS",
       "parent": "common.layout.pbxMenu.settings",
-      "contentUrl": "http://localhost:3001/portal/sms.html"
+      "contentUrl": "./portal/sms.html"
     },
 
     {
@@ -61,7 +61,7 @@
         "pbx.users"
       ],
       "name": "More user details",
-      "contentUrl": "http://localhost:3001/portal/pbx-user.html"
+      "contentUrl": "./portal/pbx-user.html"
     },
 
     {
@@ -72,7 +72,7 @@
       "name": "Coffee Room",
       "parent": "Fun",
       "parentIcon": "Accessibility",
-      "contentUrl": "http://localhost:3001/portal/coffee.html"
+      "contentUrl": "./portal/coffee.html"
     },
     {
       "entityId": "global-settings",
@@ -81,8 +81,8 @@
       ],
       "name": "Custom global",
       "icon": "BrightnessHigh",
-      "contentUrl": "http://localhost:3001/portal/global.html"
+      "contentUrl": "./portal/global.html"
     }
   ],
-  "backgroundScript": "http://localhost:3001/portal/background.js"
+  "backgroundScript": "./portal/background.js"
 }

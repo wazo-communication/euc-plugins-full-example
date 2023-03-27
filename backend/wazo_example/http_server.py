@@ -3,11 +3,20 @@
 
 import uvicorn
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response
 
 from .http_router import router
+
+
+class CustomHeaderMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next: callable) -> Response:
+        response: Response = await call_next(request)
+        response.headers["Access-Control-Allow-Private-Network"] = "true"
+        return response
 
 
 class Application:
@@ -31,7 +40,11 @@ class Application:
         self.app.add_middleware(
             CORSMiddleware,
             allow_origins=["*"],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
         )
+        self.app.add_middleware(CustomHeaderMiddleware)
 
     def load_app(self) -> FastAPI:
         return self.app
