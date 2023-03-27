@@ -31,13 +31,16 @@ class Application:
         self.app.add_middleware(
             CORSMiddleware,
             allow_origins=["*"],
-            allow_credentials=True,
-            allow_methods=["*"],
-            allow_headers=["*"],
         )
 
     def load_app(self) -> FastAPI:
         return self.app
 
     def run(self, host="0.0.0.0", port=8888) -> None:
-        uvicorn.run(self.app, host=host, port=port, log_level="info", reload=False)
+        uvicorn.run(
+            self.app,
+            host=host,
+            port=port,
+            log_level="info",
+            reload=False
+        )
