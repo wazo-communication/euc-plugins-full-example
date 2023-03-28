@@ -1,0 +1,32 @@
+{
+  "manifestVersion": "0.1",
+  "version": "1.0.0",
+  "id": "my-application-id",
+  "packageName": "com.wazo.example",
+  "developer": {
+    "name": "My Name",
+    "websiteUrl": "https://website.com/",
+    "privacyUrl": "https://website.com/privacy",
+    "mpnId": "1234567890"
+  },
+  "name": {
+    "short": "App Name",
+    "full": "Full app name"
+  },
+  "description": {
+    "short": "Demo with portal",
+    "full": "Demo to add feature hello from portal"
+  },
+  "staticTabs": [
+    {
+      "entityId": "custom-child",
+      "context": [
+        "pbxMenu"
+      ],
+      "name": "Hello World",
+      "parent": "Demo",
+      "parentIcon": "Accessibility",
+      "contentUrl": "./portal/index.html"
+    }
+  ]
+}

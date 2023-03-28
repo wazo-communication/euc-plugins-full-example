@@ -1,0 +1,15 @@
+[Unit]
+Description=Wazo Plugin Backend service
+After=network.target
+
+[Service]
+Type=simple
+User=root
+LimitNOFILE=4096
+WorkingDirectory=/usr/src/wazo-example-plugin/backend/
+ExecStart=/usr/bin/env python3 main.py
+StandardOutput=file:/var/log/backend.log
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
