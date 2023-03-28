@@ -45,6 +45,7 @@ class Application:
                 "https://portal.wazo.io",
                 "https://portal.development.wazo.cloud"
             ],
+            allow_origin_regex="http://localhost:.*",
             allow_credentials=True,
             allow_methods=["*"],
             allow_headers=["*"],
