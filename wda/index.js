@@ -5,6 +5,7 @@ let session;
 
 const url = window.location.origin;
 
+const user = document.getElementById('user');
 const hello = document.getElementById('hello');
 const caller = document.getElementById('caller');
 
@@ -13,7 +14,7 @@ app.onIframeMessage = async (msg) => {
     changeCaller(`${msg.data.peer_caller_id_name} (${msg.data.peer_caller_id_number})`);
   }
   if (msg.event === 'call_ended') {
-    const data = await getHello();
+    const data = await getCalls();
     if (data.items.length === 0) {
       changeCaller();
     }
@@ -27,8 +28,24 @@ const changeCaller = (data) => {
     caller.textContent = `In call with: ${data}`;
 }
 
+const changeUser = (data) => {
+    user.textContent = data;
+}
+
 const changeHello = (data) => {
     hello.textContent = data;
+}
+
+const getCalls = async () => {
+  const options = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Auth-Token': session.token
+    }
+  }
+
+  return fetch(`${url}/calls`, options).then(response => response.json());
 }
 
 const getHello = async () => {
@@ -40,7 +57,7 @@ const getHello = async () => {
     }
   }
 
-  return fetch(`${url}/calls`, options).then(response => response.json());
+  return fetch(`${url}/hello`, options).then(response => response.json());
 }
 
 const appLoaded = () => {
@@ -57,9 +74,11 @@ const appLoaded = () => {
   Wazo.Auth.setApiToken(session.token);
 
   const me = await Wazo.api.confd.getUser(session.uuid);
-  changeHello(`Hello, ${me.firstName} ${me.lastName}!`);
+  changeUser(`${me.firstName} ${me.lastName}!`);
 
-  const data = await getHello();
+  const hello = await getHello();
+  changeHello(hello.name);
+  const data = await getCalls();
   const firstCaller = data?.items[0];
   if (firstCaller) {
       const displayCaller = `${firstCaller.peer_caller_id_name} (${firstCaller.peer_caller_id_number})`;

@@ -1,49 +1,56 @@
 import app from 'https://cdn.jsdelivr.net/npm/@wazo/euc-plugins-sdk@latest/lib/esm/app.js';
 
-const url = '';
+let session;
 
-app.onLoaded = async () => {
-  console.log('Example loaded', stack);
+const url = 'http://localhost:8088';
 
-  if (stack) {
-    const hello = await getHello(url);
-    console.log(conference);
+const onLoaded = async () => {
+  const string = document.getElementById("hello");
+  const hello = await getHello(url);
+  string.value = hello.name;
 
-    const saveButton = document.getElementById("save");
-    saveButton.addEventListener('click', async (e) => {
-      e.preventDefault();
-      console.log(e);
-      const string = document.getElementById("hello").value;
-      console.log(string);
-      await saveHello(url, string);
-    });
-  }
-};
+  const saveButton = document.getElementById("save");
+  saveButton.addEventListener('click', async (e) => {
+    e.preventDefault();
+    await saveHello(url, string.value);
+    alert('saved');
+  });
+}
 
 const getHello = async (url) => {
   const options = {
     method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Auth-Token': session.token,
+      'X-Auth-Origin': 'admin'
+    }
   }
 
-  return fetch(`https://${url}/example/api/hello`, options).then(response => response.json());
+  return fetch(`${url}/hello`, options).then(response => response.json());
 }
 
 const saveHello = async (url, string) => {
   const data = {
-    hello: string
+    name: string
   }
 
   const options = {
     method: 'POST',
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Auth-Token': session.token,
+      'X-Auth-Origin': 'admin'
+    }
   }
 
-  return fetch(`https://${url}/example/api/hello`, options).then(response => response.json());
+  return fetch(`${url}/hello`, options).then(response => response.json());
 }
 
 (async () => {
   await app.initialize();
   const context = app.getContext();
   session = context.user;
-  console.log(session);
+  await onLoaded();
 })();

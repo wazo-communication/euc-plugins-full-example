@@ -3,6 +3,7 @@
 
 
 from fastapi import APIRouter, WebSocket, Depends, Header
+from pydantic import BaseModel
 from starlette.websockets import WebSocketDisconnect
 from typing import Optional, Dict, Any, List
 
@@ -10,12 +11,31 @@ from .dependencies import auth, calls, wclient
 from .logger import setup_logging
 
 
+my_hello = "Hello"
+
+
 logger = setup_logging()
 router = APIRouter()
+
+
+class Hello(BaseModel):
+    name: str
+
 
 @router.get("/calls")
 def list_calls(user_token: str = Depends(auth.get_and_verify_token)) -> List[Dict[str, Any]]:
     return calls.list_calls(user_token)
+
+@router.get("/hello")
+def get_hello(user_token: str = Depends(auth.get_and_verify_token)) -> List[Dict[str, Any]]:
+    return {"name": my_hello}
+
+@router.post("/hello")
+def post_hello(hello: Hello, user_token: str = Depends(auth.get_and_verify_token)) -> List[Dict[str, Any]]:
+    global my_hello
+
+    my_hello = hello.name
+    return {"name": my_hello}
 
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket) -> Optional[bool]:

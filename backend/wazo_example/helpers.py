@@ -70,7 +70,7 @@ class AuthManager:
         self.token = token_data['token']
         self.user_uuid = token_data['metadata']['uuid']
 
-    async def get_and_verify_token(self, x_auth_token: str = Header(default=None), use_async: bool = False) -> None:
+    async def get_and_verify_token(self, x_auth_token: str = Header(default=None), use_async: bool = False, x_auth_origin: str = Header(default="user")) -> None:
         if use_async:
             token = None
             try:
@@ -80,7 +80,13 @@ class AuthManager:
                 raise HTTPException(status_code=401, detail="Authentication failed")
         else:
             async with aiohttp.ClientSession() as session:
-                token_url = f'https://{self.host}/api/auth/0.1/token/{x_auth_token}'
+                if "admin" in x_auth_origin:
+                    host = "portal.development.wazo.cloud"
+                else:
+                    host = self.host
+                logger.debug(f"Check authentication on {host}: {x_auth_origin}")
+                token_url = f'https://{host}/api/auth/0.1/token/{x_auth_token}'
+                logger.debug(token_url)
                 async with session.head(token_url) as resp:
                     if resp.status != 204:
                         raise HTTPException(status_code=401, detail="Authentication failed")
